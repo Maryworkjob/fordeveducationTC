@@ -6,6 +6,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import entities.Category;
 import entities.Pet;
+import entities.User;
 import io.qameta.allure.Allure;
 import io.restassured.http.ContentType;
 import io.restassured.module.jsv.JsonSchemaValidator;
@@ -80,5 +81,31 @@ public class PetSteps {
         response.then().body(JsonSchemaValidator.matchesJsonSchemaInClasspath("PetSchema.json"));
         Pet changedPetFromResponse = response.as(Pet.class);
         Assert.assertEquals("Wrong new name of pet", petToAdd.getName(), changedPetFromResponse.getName());
+    }
+
+    @When("I add new user")
+    public void iAddNewUser() {
+        System.out.println("I preparing test data...");
+        User userToAdd = User.builder()
+                .id(new Random().nextInt(5))
+                .username("human")
+                .firstName("Andryusha")
+                .lastName("Drobot")
+                .email("sobaka@gmail.com")
+                .password("qwerty")
+                .phone("nokia 3310")
+                .userStatus(new Random().nextInt(5))
+                .build();
+        System.out.println("Body to send: " + new Gson().toJson(userToAdd));
+
+        Response addingUserResponse = given()
+                .baseUri(BASE_URL)
+                .basePath("/user")
+                .contentType(ContentType.JSON)
+                .body(userToAdd)
+                .when()
+                .post();
+        Assert.assertEquals("status code", 200, addingUserResponse.getStatusCode());
+        System.out.println("Response: " + addingUserResponse.asString());
     }
 }
