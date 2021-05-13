@@ -1,0 +1,6 @@
+entities\Pet$PetBuilder.class
+entities\Category.class
+entities\Order.class
+entities\Pet.class
+entities\User.class
+entities\User$UserBuilder.class
